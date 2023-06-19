@@ -1,0 +1,164 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.AI;
+using TMPro;
+using UnityEngine.UI;
+
+public class SetNavigationTarget : MonoBehaviour
+{
+   [SerializeField]
+   private TMP_Dropdown navigationTargetDropDown;
+    [SerializeField] Transform pointUser;
+    [SerializeField] Transform pointA;
+    [SerializeField] Transform pointB;
+    [SerializeField] Transform pointC;
+
+    
+
+  // private Camera topDownCamera;
+    public string dataTmpt;
+
+
+   [SerializeField]
+   private List<Target> navigationTargetObject = new List<Target>();
+   //private GameObject navTargetObject;
+
+   private NavMeshPath path; //current calculated path
+   private LineRenderer line; //linerenderer to display path
+   private Vector3 targetPosition = Vector3.zero; // current target position
+    public Vector3 tmptPosition = Vector3.zero;
+
+   private bool lineToggle = false;
+
+   private void Start() {
+    path = new NavMeshPath();
+    line = transform.GetComponent<LineRenderer>();
+    line.enabled = lineToggle;
+
+   }
+   [SerializeField] Text infoTiba;
+   [SerializeField] Text distanceText;
+    
+
+    float distanceAwal;
+    
+    float distanceUser;
+    float distanceA;
+    float distanceB;
+    float distanceC;
+
+public void SetCurrentNavigationTarget(int selectedValue) {
+        targetPosition = Vector3.zero;
+        string selectedText = navigationTargetDropDown.options[selectedValue].text;
+        Target currentTarget = navigationTargetObject.Find(x => x.Name.Equals(selectedText));
+        if (currentTarget != null) {
+            targetPosition = currentTarget.PositionObject.transform.position;
+            Debug.Log("posisi target" + targetPosition);
+
+            tmptPosition = targetPosition;
+        Debug.Log("tmpt dalam curent navigation" + tmptPosition);
+        }
+         
+    }
+   private void Update(){
+     distanceA = ( pointA.transform.position - pointUser.transform.position ).magnitude;
+     distanceB = ( pointB.transform.position - pointUser.transform.position ).magnitude;
+     distanceC = ( pointC.transform.position - pointUser.transform.position ).magnitude;
+     distanceUser = ( tmptPosition - pointUser.transform.position ).magnitude;
+     Debug.Log("ini posisi user" + distanceUser);
+     distanceText.text = distanceUser.ToString("F1") + "m";
+
+     if(distanceUser == distanceA)
+     {
+        if(distanceUser < 2)
+        {
+            infoTiba.text = "Anda sampai di Tujuan";
+        }
+        Debug.Log(" ini posisi tujuan");
+       
+     }
+     else
+     {
+        if(distanceUser < 2)
+        {
+            infoTiba.text = "posisi AWal";
+        }
+       
+        Debug.Log("ini bukan posisi tujuan");
+     }
+     if(distanceUser == distanceB)
+     {
+        if(distanceUser < 2)
+        {
+            infoTiba.text = "Anda sampai di Tujuan";
+        }
+        Debug.Log(" ini posisi tujuan");
+       
+     }
+     else
+     {
+        if(distanceUser < 2)
+        {
+            infoTiba.text = "posisi AWal";
+        }
+       
+        Debug.Log("ini bukan posisi tujuan");
+     }
+
+     if(distanceUser == distanceC)
+     {
+        if(distanceUser < 2)
+        {
+            infoTiba.text = "Anda sampai di Tujuan";
+        }
+        Debug.Log(" ini posisi tujuan");
+       
+     }
+     else
+     {
+        if(distanceUser < 2)
+        {
+            infoTiba.text = "posisi AWal";
+        }
+       
+        Debug.Log("ini bukan posisi tujuan");
+     }
+
+   
+
+   
+    //jarak start
+   
+     
+    
+        
+        Debug.Log("tmpt dalam update" + tmptPosition); 
+        
+        if (lineToggle && targetPosition != Vector3.zero) 
+        {
+                 NavMesh.CalculatePath(transform.position, targetPosition, NavMesh.AllAreas, path);
+                 line.positionCount = path.corners.Length;
+                line.SetPositions(path.corners);
+        }
+
+    }
+
+    
+
+    public void ToggleVisibility() {
+        lineToggle = !lineToggle;
+        line.enabled = lineToggle;
+    }
+   /*if ((Input.touchCount > 0) && (Input.GetTouch(0).phase == TouchPhase.Began)){
+        lineToggle = !lineToggle;
+    }
+    if (lineToggle){
+        NavMesh.CalculatePath(transform.position, navTargetObject.transform.position,NavMesh.AllAreas, path);
+        line.positionCount = path.corners.Length;
+        line.SetPositions(path.corners);
+        line.enabled = true;
+    }
+   }*/
+
+}
